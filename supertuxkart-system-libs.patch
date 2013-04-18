@@ -1,0 +1,90 @@
+diff -aurN SuperTuxKart-0.8.orig/CMakeLists.txt SuperTuxKart-0.8/CMakeLists.txt
+--- SuperTuxKart-0.8.orig/CMakeLists.txt	2013-04-16 11:26:27.444920165 +0200
++++ SuperTuxKart-0.8/CMakeLists.txt	2013-04-16 11:38:06.835862926 +0200
+@@ -186,15 +186,15 @@
+ 
+ # Common library dependencies
+ target_link_libraries(supertuxkart
++    ${IRRLICHT_LIBRARIES}
++    ${IRRLICHT_LIBRARY}
+     bulletdynamics
+     bulletcollision
+     bulletmath
+     enet
+-    ${CURL_LIBRARIES}
+-    ${IRRLICHT_LIBRARIES}
++    ${IRRLICHT_XF86VM_LIBRARY} -ljpeg -lpng -lz -lbz2
++    ${CURL_LIBRARIES} -lz
+     ${OGGVORBIS_LIBRARIES}
+-    ${IRRLICHT_LIBRARY}
+-    ${IRRLICHT_XF86VM_LIBRARY}
+     ${OPENAL_LIBRARY}
+     ${OPENGL_LIBRARIES})
+ 
+diff -aurN SuperTuxKart-0.8.orig/lib/irrlicht/include/IrrCompileConfig.h SuperTuxKart-0.8/lib/irrlicht/include/IrrCompileConfig.h
+--- SuperTuxKart-0.8.orig/lib/irrlicht/include/IrrCompileConfig.h	2013-04-16 11:26:27.374917675 +0200
++++ SuperTuxKart-0.8/lib/irrlicht/include/IrrCompileConfig.h	2013-04-16 11:31:36.175555468 +0200
+@@ -245,7 +245,7 @@
+ //! Define _IRR_USE_NON_SYSTEM_JPEG_LIB_ to let irrlicht use the jpeglib which comes with irrlicht.
+ /** If this is commented out, Irrlicht will try to compile using the jpeg lib installed in the system.
+ 	This is only used when _IRR_COMPILE_WITH_LIBJPEG_ is defined. */
+-#define _IRR_USE_NON_SYSTEM_JPEG_LIB_
++//#define _IRR_USE_NON_SYSTEM_JPEG_LIB_
+ #ifdef NO_IRR_USE_NON_SYSTEM_JPEG_LIB_
+ #undef _IRR_USE_NON_SYSTEM_JPEG_LIB_
+ #endif
+@@ -261,7 +261,7 @@
+ //! Define _IRR_USE_NON_SYSTEM_LIBPNG_ to let irrlicht use the libpng which comes with irrlicht.
+ /** If this is commented out, Irrlicht will try to compile using the libpng installed in the system.
+ 	This is only used when _IRR_COMPILE_WITH_LIBPNG_ is defined. */
+-#define _IRR_USE_NON_SYSTEM_LIB_PNG_
++//#define _IRR_USE_NON_SYSTEM_LIB_PNG_
+ #ifdef NO_IRR_USE_NON_SYSTEM_LIB_PNG_
+ #undef _IRR_USE_NON_SYSTEM_LIB_PNG_
+ #endif
+@@ -598,7 +598,7 @@
+ /** If this is commented out, Irrlicht will try to compile using the zlib
+ installed on the system. This is only used when _IRR_COMPILE_WITH_ZLIB_ is
+ defined. */
+-#define _IRR_USE_NON_SYSTEM_ZLIB_
++//#define _IRR_USE_NON_SYSTEM_ZLIB_
+ #ifdef NO_IRR_USE_NON_SYSTEM_ZLIB_
+ #undef _IRR_USE_NON_SYSTEM_ZLIB_
+ #endif
+@@ -619,7 +619,7 @@
+ /** If this is commented out, Irrlicht will try to compile using the bzlib
+ installed on the system. This is only used when _IRR_COMPILE_WITH_BZLIB_ is
+ defined. */
+-#define _IRR_USE_NON_SYSTEM_BZLIB_
++//#define _IRR_USE_NON_SYSTEM_BZLIB_
+ #ifdef NO_IRR_USE_NON_SYSTEM_BZLIB_
+ #undef _IRR_USE_NON_SYSTEM_BZLIB_
+ #endif
+diff -aurN SuperTuxKart-0.8.orig/lib/irrlicht/source/Irrlicht/Makefile SuperTuxKart-0.8/lib/irrlicht/source/Irrlicht/Makefile
+--- SuperTuxKart-0.8.orig/lib/irrlicht/source/Irrlicht/Makefile	2013-04-16 11:26:27.362917247 +0200
++++ SuperTuxKart-0.8/lib/irrlicht/source/Irrlicht/Makefile	2013-04-16 11:32:56.665648908 +0200
+@@ -46,22 +46,17 @@
+ IRRIOOBJ = CFileList.o CFileSystem.o CLimitReadFile.o CMemoryFile.o CReadFile.o CWriteFile.o CXMLReader.o CXMLWriter.o CWADReader.o CZipReader.o CPakReader.o CNPKReader.o CTarReader.o CMountPointReader.o irrXML.o CAttributes.o lzma/LzmaDec.o
+ IRROTHEROBJ = CIrrDeviceSDL.o CIrrDeviceLinux.o CIrrDeviceConsole.o CIrrDeviceStub.o CIrrDeviceWin32.o CIrrDeviceFB.o CLogger.o COSOperator.o Irrlicht.o os.o
+ IRRGUIOBJ = CGUIButton.o CGUICheckBox.o CGUIComboBox.o CGUIContextMenu.o CGUIEditBox.o CGUIEnvironment.o CGUIFileOpenDialog.o CGUIFont.o CGUIImage.o CGUIInOutFader.o CGUIListBox.o CGUIMenu.o CGUIMeshViewer.o CGUIMessageBox.o CGUIModalScreen.o CGUIScrollBar.o CGUISpinBox.o CGUISkin.o CGUIStaticText.o CGUITabControl.o CGUITable.o CGUIToolBar.o CGUIWindow.o CGUIColorSelectDialog.o CDefaultGUIElementFactory.o CGUISpriteBank.o CGUIImageList.o CGUITreeView.o
+-ZLIBOBJ = zlib/adler32.o zlib/compress.o zlib/crc32.o zlib/deflate.o zlib/inffast.o zlib/inflate.o zlib/inftrees.o zlib/trees.o zlib/uncompr.o zlib/zutil.o
+-JPEGLIBOBJ = jpeglib/jcapimin.o jpeglib/jcapistd.o jpeglib/jccoefct.o jpeglib/jccolor.o jpeglib/jcdctmgr.o jpeglib/jchuff.o jpeglib/jcinit.o jpeglib/jcmainct.o jpeglib/jcmarker.o jpeglib/jcmaster.o jpeglib/jcomapi.o jpeglib/jcparam.o jpeglib/jcprepct.o jpeglib/jcsample.o jpeglib/jctrans.o jpeglib/jdapimin.o jpeglib/jdapistd.o jpeglib/jdatadst.o jpeglib/jdatasrc.o jpeglib/jdcoefct.o jpeglib/jdcolor.o jpeglib/jddctmgr.o jpeglib/jdhuff.o jpeglib/jdinput.o jpeglib/jdmainct.o jpeglib/jdmarker.o jpeglib/jdmaster.o jpeglib/jdmerge.o jpeglib/jdpostct.o jpeglib/jdsample.o jpeglib/jdtrans.o jpeglib/jerror.o jpeglib/jfdctflt.o jpeglib/jfdctfst.o jpeglib/jfdctint.o jpeglib/jidctflt.o jpeglib/jidctfst.o jpeglib/jidctint.o jpeglib/jmemmgr.o jpeglib/jmemnobs.o jpeglib/jquant1.o jpeglib/jquant2.o jpeglib/jutils.o jpeglib/jcarith.o jpeglib/jdarith.o jpeglib/jaricom.o
+-LIBPNGOBJ = libpng/png.o libpng/pngerror.o libpng/pngget.o libpng/pngmem.o libpng/pngpread.o libpng/pngread.o libpng/pngrio.o libpng/pngrtran.o libpng/pngrutil.o libpng/pngset.o libpng/pngtrans.o libpng/pngwio.o libpng/pngwrite.o libpng/pngwtran.o libpng/pngwutil.o
+ LIBAESGM = aesGladman/aescrypt.o aesGladman/aeskey.o aesGladman/aestab.o aesGladman/fileenc.o aesGladman/hmac.o aesGladman/prng.o aesGladman/pwd2key.o aesGladman/sha1.o aesGladman/sha2.o
+-BZIP2OBJ = bzip2/blocksort.o bzip2/huffman.o bzip2/crctable.o bzip2/randtable.o bzip2/bzcompress.o bzip2/decompress.o bzip2/bzlib.o
+ 
+ # Next variable is for additional scene nodes etc. of customized Irrlicht versions
+ EXTRAOBJ =
+ LINKOBJ = $(IRRMESHOBJ) $(IRROBJ) $(IRRPARTICLEOBJ) $(IRRANIMOBJ) \
+ 	$(IRRVIDEOOBJ) $(IRRSWRENDEROBJ) $(IRRIOOBJ) $(IRROTHEROBJ) \
+-	$(IRRGUIOBJ) $(ZLIBOBJ) $(JPEGLIBOBJ) $(LIBPNGOBJ) $(LIBAESGM) \
+-	$(BZIP2OBJ) $(EXTRAOBJ)
++	$(IRRGUIOBJ) $(LIBAESGM) $(EXTRAOBJ)
+ 
+ ###############
+ #Compiler flags
+-CXXINCS = -I../../include -Izlib -Ijpeglib -Ilibpng
++CXXINCS = -I../../include
+ CPPFLAGS += $(CXXINCS) -DIRRLICHT_EXPORTS=1
+ CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing
+ ifndef NDEBUG
