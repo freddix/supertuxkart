@@ -1,14 +1,13 @@
 Summary:	Free 3d kart racing game
 Name:		supertuxkart
-Version:	0.8
-Release:	3
+Version:	0.8.1
+Release:	1
 License:	GPL v1, GPL v2, GPL v3+, CC-BY-SA v3, CC-BY-SA v3+
 Group:		X11/Applications/Games
 Source0:	http://downloads.sourceforge.net/supertuxkart/%{name}-%{version}-src.tar.bz2
-# Source0-md5:	0b939ce601374758938119e0b0dd1fec
+# Source0-md5:	aa31ecf883dc35859eec76c667f1a6d6
 Patch0:		%{name}-system-libs.patch
 URL:		http://supertuxkart.net/
-BuildRequires:	ImageMagick-coders
 BuildRequires:	OpenGL-devel
 BuildRequires:	OpenGL-glut-devel
 BuildRequires:	SDL-devel
@@ -60,7 +59,7 @@ install -d $RPM_BUILD_ROOT%{_desktopdir}
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/supertuxkart/data/{*.xpm,run_me.sh,supertuxkart_desktop.template}
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/supertuxkart/data/{run_me.sh,supertuxkart_desktop.template}
 find $RPM_BUILD_ROOT%{_datadir}/supertuxkart -name Makefile* -exec rm -f {} \;
 
 cat > $RPM_BUILD_ROOT%{_desktopdir}/%{name}.desktop <<EOF
@@ -75,7 +74,7 @@ StartupNotify=false
 Categories=Game;ArcadeGame;
 EOF
 
-convert data/supertuxkart_64.xpm $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
+cp data/supertuxkart_32.png $RPM_BUILD_ROOT%{_pixmapsdir}/%{name}.png
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -86,5 +85,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %{_datadir}/%{name}
 %{_desktopdir}/%{name}.desktop
-%{_pixmapsdir}/%{name}.png
+%{_pixmapsdir}/*.png
 
